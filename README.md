@@ -2,11 +2,11 @@
 
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jadenellman/Final-Project/HEAD)
 
-|              |                            |
-|--------------|---------------------------:|
-| Jaden Ellman |     ~*jnellma\@emory.edu*~ |
-| Sanya Kumar  | ~*sanya.kumar\@emory.edu*~ |
-| Zaim Zibran  | ~*zaim.zibran\@emory.edu*~ |
+|              |                          |
+|--------------|-------------------------:|
+| Jaden Ellman |     *jnellma\@emory.edu* |
+| Sanya Kumar  | *sanya.kumar\@emory.edu* |
+| Zaim Zibran  | *zaim.zibran\@emory.edu* |
 
 This project was completed for an undergraduate Technical Writing course at Emory University.
 
@@ -31,3 +31,22 @@ This project was completed for an undergraduate Technical Writing course at Emor
 []
 
 ## Directory Structure
+
+.
+└── main/
+├── data/
+│ ├── .DS_Store
+│ ├── CDC Obesity 2022-overall-prevalence.csv
+│ └── nanda.csv.zip
+├── renv/
+│ ├── .gitignore
+│ ├── activate.R
+│ └── settings.json
+├── .DS_Store
+├── .Rprofile
+├── .gitignore
+├── EDANotebook_Submit.Rmd
+├── EDANotebook_Submit.html
+├── Final Project.Rproj
+├── README.md
+└── renv.lock
