@@ -1,4 +1,3 @@
----
 title: "EDA"
 author: "Jaden, Sanya, and Zaim"
 date: "2024-03-04"
@@ -11,12 +10,28 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 options(repos = c(CRAN = "http://cran.rstudio.com"))
 ```
-The dataset “Eating and Drinking Places by Census Tract, United States, 2003-2017” originates from the National Neighborhood Data Archive. This dataset provides a detailed view of food services across the United States, including fast food restaurants, coffee shops, and bars. The comprehensive data supports analyses that are aimed toward the understanding of social, economic, and health-related focuses in various states and/or regions. The distribution of restaurants and the density of individuals who attend these food establishments serve as a useful resource for visualizing state-level and region-level trends. Additionally, these trends can inform policy, urban planning, and other various interventions. Our group aims to expand this analysis to observe these trends over time, focusing on food establishment preferences from 2003 and 2017 and how they may have shifted. This comparison can provide insight into dietary habits or social influences from the period that may influence decisions. Additionally, our group intends to delve into state and regional preferences which will highlight potential cultural or economic factors. Overall, this analysis will elevate understanding of American food consumption patterns, identifying key trends for further analysis and research
+The dataset “Eating and Drinking Places by Census Tract, United States, 2003-2017” originates from the National Neighborhood Data Archive. This dataset provides a detailed view of food services across the United States, including fast food restaurants, coffee shops, and bars. The comprehensive data supports analyses that are aimed toward the understanding of social, economic, and health-related focuses in various states and/or regions. The distribution of restaurants and the density of individuals who attend these food establishments serve as a useful resource for visualizing state-level and region-level trends. Additionally, these trends can inform policy, urban planning, and other various interventions. Our group aims to expand this analysis to observe these trends, focusing on food establishments and their link to socioeconomic issues and obesity. This focus can provide insight into influences that may lead to obesity such socioeconomic status and establishment type density. These findings will highlight potential cultural or economic factors. Overall, this analysis will elevate understanding of American food consumption patterns, identifying key trends for further analysis and research. Our research question is, "How does the type of food establishments within the United States correlate with obesity rates and how do these relationships vary by socioeconomic status?"
 
-This dataset contains detailed information about the number and density of various types of eating and drinking establishments per census tract in the United States, measured from 2003 through 2017. The data includes counts and density measures of full-service restaurants, limited-service eating places, snack and nonalcoholic beverage bars, and drinking places that serve alcohol. Additional measures include population, land area, and employment data related to these establishments.
+This data set contains detailed information about the number and density of various types of eating and drinking establishments per census tract in the United States, measured from 2003 through 2017. The data includes counts and density measures of full-service restaurants, limited-service eating places, snack and nonalcoholic beverage bars, and drinking places that serve alcohol. Additional measures include population, land area, and employment data related to these establishments.The reason why this dataset was chosen in comparison to other similar datasets was due to how comprehensive it is. The data set not only provided information on establishment density, but also had information on population density, sales, number of employees. This data set allowed us to look more onto our research question as you can visualize by square area or state. Additionally, the data set covers all the establishment types which provides more insight into the regions and can be used as a good comparison for our focus on fast-food establishments.
+
+The following are the what the variables stand for:
+
+Count_722410 = drinking establishments 
+
+Count_7225 = all food establishments
+
+Count_722511 = full-service 
+
+Count_722513 = fast food 
+
+Count_722515 = snack establishments (e.g. coffee shops, bagel shops, ice cream parlors)
+
+The same idea can be applied for count_sales, popden_, and other variables with the numerical codes listed above.
+
 
 ```{r eval=FALSE, include=FALSE}
 # Install packages
+install.packages("tigris")
 install.packages("haven")
 install.packages(c("ggplot2", "corrplot"))
 install.packages("tidyverse")
@@ -33,9 +48,9 @@ library(tigris)
 options(tigris_use_cache = TRUE)
 ```
 
-This dataset uses TIGER census tract codes to represent the location of each observation. Each 11-digit code contains information about the state (indicated by the first two digits) and county (indicated by the following three digits) of origin. To extract this information and create new variables in our data frame for state and county categories, we will use nested loops that pull state and county IDs using the `tigris` package and run them against each observation's full TIGER code. Converting the codes to simpler categorical variables will allow us to more effectively compare data based on geographic location and increase overall readability.
+This data set uses TIGER census tract codes to represent the location of each observation. Each 11-digit code contains information about the state (indicated by the first two digits) and county (indicated by the following three digits) of origin. To extract this information and create new variables in our data frame for state and county categories, we will use nested loops that pull state and county IDs using the `tigris` package and run them against each observation's full TIGER code. Converting the codes to simpler categorical variables will allow us to more effectively compare data based on geographic location and increase overall readability.
 
-First, we import the data, making sure to specify that the `tract_fips10` variable, the column representing the TIGER codes, is of the character class rather than integer. This ensures that any leading zeroes are preserved.
+First, we import the data, making sure to specify that the `tract_fips10` variable, the column representing the TIGER codes, is of the character class rather than integer. This ensures that any leading zeros are preserved.
 
 ```{r}
 # Read the csv file
@@ -85,7 +100,7 @@ The above code chunk runs every unique TIGER code in the dataset against the lis
 
 ## Additional cleaning and data overview
 
-To begin the rest of the cleaning process, we generate an overview of the dataset's structure using `glimpse()`.
+To begin the rest of the cleaning process, we generate an overview of the dataset's structure using `glimpse()`. The reasoning behind using glimpse is to provide a concise overview of the dataset.By doing this, we will be able to look at the various variables and decipher which one is best to investigate and continue the notebook with. Additionally, this can allow one to see if there's any missing values or areas needed for filtering and cleaning.
 
 ```{r}
 # Get an overview of the dataset structure
@@ -115,7 +130,7 @@ data_filtered_years <- data_filtered_years %>% mutate(year = factor(year))
 print(sapply(data_filtered_years, class))
 ```
 
-Now we can generate a summary of the newly cleaned data.
+Now we can generate a summary of the newly cleaned data. The reason behind doing a summary of the cleaned data is to ensure that the cleaning process was effective. Additionally, this serves as one last inspection of the data set.
 
 ```{r}
 # Inspecting the dataset for any anomalies and contextualizing through data summary
@@ -147,9 +162,11 @@ Now that the data has been sufficiently cleaned, we can start to visualize some 
 
 ## Data visualization
 
-In this section of the code, the dataset was cleaned and filter to allow further analysis through visualizations and exploration. More specifically, the data was aggregated by year which was done by grouping the dataset by 'year'. This variable was converted into a factor to provide years of interest. What was chosen was time periods that reflect pre-recession periods and post-recession periods.
+In this section of the code, the dataset was cleaned and filtered to allow further analysis through visualizations and exploration. More specifically, the data was aggregated by year which was done by grouping the dataset by 'year'. This variable was converted into a factor to provide years of interest. What was chosen was time periods that reflect pre-recession periods and post-recession periods.
 
-In this particular part of code, the 'summarise()' function is used on this grouped data to calculate the mean of numeric variables for each year. Additionally, the 'na.rm = TRUE' code is used to ignore any missing values to ensure integrity in the calculations. The summary data displays averages of the numeric indicators such densities of certain food establishments, land area, and more.The summarization allows for deeper understanding of trends over specified years. The 'print()' function is used to show all the yearly averages.
+These data visualizations are split into two parts. One part will be exploring the variables and the dataset as a whole. Certain visualizations will include box plots regarding the economic playground and scatterplots observing variables such as sales, number of employees, and population density. 
+
+In this particular part of the code, the 'summarise()' function is used on this grouped data to calculate the mean of numeric variables for each year. Additionally, the 'na.rm = TRUE' code is used to ignore any missing values to ensure integrity in the calculations. The summary data displays averages of the numeric indicators such as densities of certain food establishments, land area, and more.The summarization allows for deeper understanding of trends over specified years. The 'print()' function is used to show all the yearly averages.
 
 ```{r}
 # Aggregate data by year, summarizing numeric values by their mean
@@ -161,21 +178,21 @@ my_data_summary <- data_filtered_years %>%
 print(my_data_summary)
 ```
 
-The 'data_filtered_years' dataset is grouped with the variable statecol. This variable represents the different American states. This creates a new dataset, 'my_data_bystate' to allow further analysis on a state-by-state basis.
+The 'data_filtered_years' data set is grouped with the variable statecol. This variable represents the different American states. This creates a new data set, 'my_data_bystate' to allow further analysis on a state-by-state basis.
 
 ```{r}
 #group by state
 my_data_bystate <- data_filtered_years %>% group_by(statecol)
 ```
 
-The dataset 'my_data_state' is processed to calculate the average population for each state. This is done by using the 'summarise_at()' function to the variable 'population'. 
+The data set 'my_data_state' is processed to calculate the average population for each state. This is done by using the 'summarise_at()' function to the variable 'population'. The reasoning behind calculating the average population is to compare the number of certain establishments. A place with a greater population will most likely have a greater number of establishments. However, it is important to have more of larger ratio of population to number of food establishments or a specific food establishment.
 
 ```{r}
 #calculate mean population by state
 my_data_bystate %>% summarise_at(vars(population), list(name = mean))
 ```
 
-For cleaner visualizations when states are part of the axes, we filter the dataset to only include the top 5 richest and poorest states (so top 10% and bottom 10% of states by GDP per capita).
+For cleaner visualizations when states are part of the axes, we filter the data set to only include the top 5 richest and poorest states (so top 10% and bottom 10% of states by GDP per capita). This code is used to minimize the scope to only 10 states rather than 50. This allows for more focused visualizations and still successfully answers the research question since it creates a means for comparison of both sides.
 
 ```{r}
 # List of top and bottom 5 states in the US, by GDP per capita
@@ -189,34 +206,33 @@ my_data_byselect$statecol <- factor(my_data_byselect$statecol, levels = c("DC", 
 ```
 
 
-
-A histogram is generated from the 'ggplot2' paclage for the variable 'count_sales_7225' which represents the number of sales. This variable is from the 'my_data_bystate' which is organized by state.
+A histogram is generated from the 'ggplot2' package for the variable 'count_sales_7225' which represents the number of sales in fast-food establishments. This variable is from the 'my_data_bystate' which is organized by state. This histogram is generated to show fast food sales by state. Sales provides a deeper level than the number of establishments since it shows customer and state engagement with the establishments.
 
 ```{r}
 # Histogram for a numerical column
 ggplot(my_data_bystate, aes(x = count_sales_7225)) + geom_histogram()
 ```
 
-This part of code shows two seperate boxplots:
+This part of code shows two separate box plots:
 
-The first box plot visualizes the variable 'count_sales_725' which reveals the number of sales at food establishments across many years. This boxplot is generated to display how sales vary annually according to state.
+The first box plot visualizes the variable 'count_sales_7225' which reveals the number of sales at fast food establishments across many years. This box plot is generated to display how sales vary annually according to state.This can provide insight into how time may impact certain influences such as obesity. If there is prolonged or increased sales at fast food establishments, this may explain an obesity issue.
 
-The second box plot visualizes the same variable of 'count_sales_725' but is filtered by the year 2007. The filter is used to provide insight on how sales varied by state during the year of 2007. 
+The second box plot visualizes the same variable of 'count_sales_7225' according to each state but is filtered by the year 2007. The filter is used to provide insight on how fast food sales varied by state during the year of 2007. This can allow us to see how readily available fast food restaurants are in each state which can lead to a higher frequency of obesity due to access.
 
 ```{r}
 # Boxplot for a numerical column by a categorical column
 ggplot(my_data_byselect, aes(x = year, y = count_sales_7225)) + geom_boxplot()
-ggplot(my_data_byselect %>% filter(year == 2007), aes(x = statecol, y = count_sales_7225)) + geom_boxplot() + ggtitle("Distribution of Restaurants with Sales >0 in 2010 Census Tracts by Select States (2007)")
+ggplot(my_data_byselect %>% filter(year == 2007), aes(x = statecol, y = count_sales_7225)) + geom_boxplot() + ggtitle("Distribution of Restaurants with Sales >0 in 2007 Census Tracts by Select States (2007)")
 ```
 
-This code is generating a scatterplot to visualize the relationship between the variables 'count_emp_7225', which represents the number of employees in the establishments, and the variable 'count_sales_7225' from the 'my_data_bystate' dataset. This scatterplot is generated to explore any relationships between number of employees and sales across different states.
+This code is generating a scatter plot to visualize the relationship between the variables 'count_emp_7225', which represents the number of employees in the fast food establishments, and the variable 'count_sales_7225' from the 'my_data_bystate' data set. This scatter plot is generated to explore any relationships between number of employees and sales across different states which can show engagement with the restaurants.
 
 ```{r}
 # Scatterplot between two numerical columns
 ggplot(my_data_bystate, aes(x = count_emp_7225, y = count_sales_7225)) + geom_point()
 ```
 
-This code calculates the mean, median, and standard deviation for the 'popden_722511' variable. This variable represents the population density of full-service restaurants. This variable comes from the dataset 'data_filtered_years' . This is generated to understand the central tendency and distribution of population densities of these food establishments over the years.
+This code calculates the mean, median, and standard deviation for the 'popden_722511' variable. This variable represents the population density of full-service restaurants. This variable comes from the data set 'data_filtered_years' . This is generated to understand the central tendency and distribution of population densities of these food establishments over the years. The reasoning behind this code is to look at statistics of full-service restaurants as a form for comparison.
 
 ```{r}
 # We might be interested in the central tendency and distribution of the population density for establishments.
@@ -230,7 +246,7 @@ data_filtered_years %>%
 ```
 
 
-A time series line plot is generated using 'ggplot2'. The line plot plots 'year' on the x axis and 'count_7225' on the y-axis. The 'count_7225' variable represents the count of specific food establishments. The 'geom_line(group=1, colour= "blue")' is utilized to generate a blue line as a visual representations of the data. This plot is generated to visualize trends or flucuations within the number of establishments over the years.
+A time series line plot is generated using 'ggplot2'. The line plot plots 'year' on the x axis and 'count_7225' on the y-axis. The 'count_7225' variable represents the count of fast food establishments. The 'geom_line(group=1, colour= "blue")' is utilized to generate a blue line as a visual representation of the data. This plot is generated to visualize trends or fluctuations within the number of establishments over the years.This code can provide insight into how the number of fast food establishments has changed in years to see any link to the ongoing crisis.
 
 ```{r}
 # Time Series of Establishment Counts over the Years
@@ -242,9 +258,9 @@ ggplot(my_data_bystate, aes(x = year, y = count_7225)) +
 ```
 
 
-This code transforms 'my_data_bystate' dataset using 'pivot_longer'. This transformation transforms the dataset to a long format which reshapes focus on columns that start with 'count_7'. These columns are turned into 'establishment_type' which represents the type of establishment. 
+This code transforms the 'my_data_bystate' dataset using 'pivot_longer'. This transformation transforms the data set to a long format which reshapes focus on columns that start with 'count_7'. These columns are turned into 'establishment_type' which represents the type of establishment. 
 
-The visualization is a barplot which has 'establishment_type' on the x axis and 'count' on the y axis. 'geom_bar(stat='identity')' indicates that the hight of the bar is represented by the count value. This visually compares the counts of different establishments which allows one to see which types are more popular or rare. 
+The visualization is a bar plot which has 'establishment_type' on the x axis and 'count' on the y axis. 'geom_bar(stat='identity')' indicates that the height of the bar is represented by the count value. This visually compares the counts of different establishments which allows one to see which types are more popular or rare. This shows the distribution of establishment types across the entire country which can reveal how the number of certain establishments may contribute to obesity or other issues.
 
 ```{r}
 library(tidyverse)
@@ -264,9 +280,9 @@ ggplot(my_data_long, aes(x = establishment_type, y = count, fill = establishment
 ```
 
 
-The 'my_data_bystate' dataset is grouped by 'statecol'. Then, the data is summarized by calculating the total count for each establishment type. This is indicated by the columns starting with 'count_7'. 'pivot_longer' transformed the data to be in a long format to make it easier to plot. 'establishment_type' is the name for more clarity on the type of establishment variable. 'mutate' modifies 'establishment_type' by removing prefix 'count_' to make it more readable. 
+The 'my_data_bystate' data set is grouped by 'statecol'. Then, the data is summarized by calculating the total count for each establishment type. This is indicated by the columns starting with 'count_7'. 'pivot_longer' transformed the data to be in a long format to make it easier to plot. 'establishment_type' is the name for more clarity on the type of establishment variable. 'mutate' modifies 'establishment_type' by removing the prefix 'count_' to make it more readable. 
 
-A bar plot is created to display each state on x-axis and their establishment counts on y-axis. The data is displayed in a descending order. The bars are color-coded by 'establishment_type' and are side-by-side. Other stylistic elements are used to make the plot more readable.
+A bar plot is created to display each state on the x-axis and their establishment counts on the y-axis. The data is displayed in a descending order. The bars are color-coded by 'establishment_type' and are side-by-side. Other stylistic elements are used to make the plot more readable. This aims to do the same thing as the previous, but focuses on each state. This can provide further insight in how socioeconomic status relates to the number of specific establishments.
 
 ```{r}
 # Summarize establishment counts by select states
@@ -291,9 +307,9 @@ install.packages("viridis")
 
 The 'viridis' package is loaded. This package is known for color scales which can help with the readability of plots. The 'my_select_data_long' dataset is grouped by 'statecol',which is the variable that represents states, and 'establishment_type'. This is summarized to calculate the mean count for each establishment type within each state.'pivot_wider' then reshapes the data to make it easier for constructing the heatmap. Within this heatmap, each row represents a state and each column represents an establishment type. Then, 'pivot_longer' is used to bring the data back to a long format which is needed for plotting with 'ggplot'. 
 
-The heatmap is constructed by using 'ggplot'. 'establishment_type' is mapped to the x-axis and 'statecol' to the y axis. The mean count is the fill of the tiles. The 'scale_fill_viridis_c' function applies 'viridis' the fill which helps distinguish between count colors. Lastly, axis labels and plot titles were added along 'theme' which allows for the plot to be more readable. 
+The heatmap is constructed by using 'ggplot'. 'establishment_type' is mapped to the x-axis and 'statecol' to the y axis. The mean count is the fill of the tiles. The 'scale_fill_viridis_c' function applies 'viridis' to the fill which helps distinguish between count colors. Lastly, axis labels and plot titles were added along 'theme' which allows for the plot to be more readable. 
 
-The purpose of this visualization is to present a comprehensive view of how the different establishment types vary state-by-state. Heatmaps are useful when trying to display magnitude a variable.
+The purpose of this visualization is to present a comprehensive view of how the different establishment types vary state-by-state. Heatmaps are useful when trying to display magnitudes of a variable.
 ```{r}
 library(viridis) 
 
@@ -323,7 +339,7 @@ ggplot(heatmap_data_melted, aes(x = establishment_type, y = statecol, fill = cou
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-The the total counts of establishment for each year was calculated. This is represented by year_totals, which normalizes the data across years. This is useful when comparing the data on equal terms. Then, the code merges 'year_totals' back into 'my_data_long' which creates the new dataset 'my_data_proportions'. The new dataset calculates the proportion of each establishment type per year. By doing this, raw counts are transformed into relative measures. Lastly, there is a bar plot visualization using 'ggplot'. The bars are filled by establishment type. 'scale_y_continuous' function makes the y-axis percentages which makes readability better.
+The total counts of establishment for each year was calculated. This is represented by year_totals, which normalizes the data across years. This is useful when comparing the data on equal terms. Then, the code merges 'year_totals' back into 'my_data_long' which creates the new dataset 'my_data_proportions'. The new dataset calculates the proportion of each establishment type per year. By doing this, raw counts are transformed into relative measures. Lastly, there is a bar plot visualization using 'ggplot'. The bars are filled by establishment types. 'scale_y_continuous' function makes the y-axis percentages which makes readability better.
 
 This approach provides clearer understanding how establishments can contribute to the environment over the years. This accounts for annual variations in data collection and more.
 
@@ -352,9 +368,9 @@ ggplot(my_data_proportions, aes(x = year, y = proportion, fill = establishment_t
 
 The 'my_data_long' dataset is grouped by 'statecol' and 'establishment_type'. Then, the average count of establishments for each type within each state is calculated. This helps understand the prevalence of different types of establishment across different locations geographically.
 
-Then, the aggregated data is plotted using 'ggplot'. The states on x-axis are reordered based on '-average_count'. This makes sure that states with higher counts are shown first. 'geom_col' creates a column chart which allows one to visualize the average count. 'facet_wrap' hen divides the chart into separate panels for each establishment type. This allows for there to be side-by-side comparisons while each panel's y-axis is adjusted independently by using 'scales = "freey"'
+Then, the aggregated data is plotted using 'ggplot'. The states on x-axis are reordered based on '-average_count'. This makes sure that states with higher counts are shown first. 'geom_col' creates a column chart which allows one to visualize the average count. 'facet_wrap' then divides the chart into separate panels for each establishment type. This allows for there to be side-by-side comparisons while each panel's y-axis is adjusted independently by using 'scales = "freey"'
 
-This visualization helps identify geographic trends and disparities. Potential hotspots for establishments types are also able to be visualized. By comparing the average establishment counts across states, one can see the densities of particular establishment types.
+This visualization helps identify geographic trends and disparities. Potential hot spots for establishment types are also able to be visualized. By comparing the average establishment counts across states, one can see the densities of particular establishment types.This provides a better visualization when wanting to compare a specific establishment type to each state rather than grouping all the establishments together in one state. One can see which state has a higher number of a specific establishment more clearly.
 ```{r}
 #Comparing the density of establishments across select states can reveal geographical trends and hotspots:
 my_select_data_long %>%
@@ -378,22 +394,22 @@ install.packages("sf")
 install.packages("maps")
 ```
 
-'states_map' variable is created for storing the data for US states using 'maps' package. 'st_as_sf' function converts the data to allow for compatibility of spatial functions in R. Then, the 'my_data_bystate' dataset is processed to calculate the total establishment count for each row. This represents the aggregated data across different types of establishments. Then, the density by state is calculated by having the dataset grouped by 'statecol'. '.groups = 'drop'' argument is used to return the standard dataframe but also not group structure.
+'states_map' variable is created for storing the data for US states using the 'maps' package. 'st_as_sf' function converts the data to allow for compatibility of spatial functions in R. Then, the 'my_data_bystate' dataset is processed to calculate the total establishment count for each row. This represents the aggregated data across different types of establishments. Then, the density by state is calculated by having the dataset grouped by 'statecol'. '.groups = 'drop'' argument is used to return the standard data frame but also not group structure.
 
-The purpose of this code is to prepare the data to for mapping and geographic analysis.
+The purpose of this code is to prepare the data for mapping and geographic analysis.
 
 ```{r}
 print(my_data_bystate)
 ```
 
-
+This code loads the map for the United States which will allow for heatmap visualizations for each state. Then, the additional code is produced to calculate establishment density by state. In total, this code is used in order to prepare for future visualizations that involve a heat map of density of the visual of America. Each state will have a different color according to the density scale to showcase state-by-state data.
 ```{r}
 library(tidyverse)
 library(sf)
 library(ggplot2)
 library(maps)
 
-# Load the map data for US states
+# Load the map data for United states
 states_map <- st_as_sf(maps::map('state', plot = FALSE, fill = TRUE))
 
 
@@ -411,7 +427,7 @@ state_establishment_density <- my_data_bystate %>%
 
 
 
-The code establishes mapping between US states abbreviations and their corresponding full names in lowercase. 'state_abbrev_to_full' is a variable in which each US state's abbreviation is mapped to the full name in lowercase. The 'state_establishment_density' datatset undergoes a mutation in which 'statecol' is converted to the full names of the states. 'tolower' function makes sure that all the state names are lowercase uniformally. 
+The code establishes mapping between US states abbreviations and their corresponding full names in lowercase. 'state_abbrev_to_full' is a variable in which each US state's abbreviation is mapped to the full name in lowercase. The 'state_establishment_density' dataset undergoes a mutation in which 'statecol' is converted to the full names of the states. 'tolower' function makes sure that all the state names are lowercase uniformly. 
 
 This code was created to provide consistency in data and allow for better readability.
 ```{r}
@@ -436,9 +452,9 @@ state_establishment_density <- state_establishment_density %>%
   mutate(statecol = tolower(state_abbrev_to_full[statecol]))
 ```
 
-The code merges geographical data with establishment density, then it visualizes the following results on a map. 'estasblishment_state_map' combines 'states_maps' with 'state_establishment_density' by using 'left_join'. The 'by' argument aligns 'ID' column with 'statecol'. Then, the map is plotted using 'ggplot' and 'geom_sf'. The 'fill' is set to 'establishment_density' which colors each states based on establishment density.
+The code merges geographical data with establishment density, then it visualizes the following results on a map. 'estasblishment_state_map' combines 'states_maps' with 'state_establishment_density' by using 'left_join'. The 'by' argument aligns the 'ID' column with 'statecol'. Then, the map is plotted using 'ggplot' and 'geom_sf'. The 'fill' is set to 'establishment_density' which colors each state based on establishment density.
 
-The merging of data allows for a spatial representation  of this establishments based on different states. This can allow for further analysis on why certain states have higher densities or the opposite.
+The merging of data allows for a spatial representation  of these establishments based on different states. This can allow for further analysis on why certain states have higher densities or the opposite.
 
 ```{r}
 # Join with the states map data
@@ -446,6 +462,7 @@ establishment_states_map <- states_map %>%
   left_join(state_establishment_density, by = c('ID' = 'statecol'))
 ```
 
+This plot is showcasing the density of establishments in general by state. This can be useful when comparing population density, socioeconomic status, and obesity rates to the number of establishments which may be a plausible influence.
 
 ```{r}
 # Plot the map
@@ -458,24 +475,24 @@ ggplot(data = establishment_states_map) +
 
 ```
 
-This is a CSV file that contains the CDC'a 2022 data on obesity prevalence. Thos dataset includes details about percentage of obesity in each state.
+This is a CSV file that contains the CDC's 2022 data on obesity prevalence. This data set includes details about the percentage of obesity in each state.
 
 ```{r}
-# Read CDC dataset that shows obesity prevalence by state, through % of population that has obesity
+# Read CDC data set that shows obesity prevalence by state, through % of population that has obesity
 
 obesity_data <- read.csv('data/CDC Obesity 2022-overall-prevalence.csv')
 ```
 
-This provides a view into the dataset. 
+This provides a view into the data set. The glimpse allows us to look at all the variables within the data set, which can help direct further steps in using this data set.
 
 ```{r}
-# Quickly view the dataset
+# Quickly view the data set
 
 glimpse(obesity_data)
 
 ```
 
-Shows general statistical values of obesity_data.
+The summary function is used to show a general statistical values of obesity_data.Therefore, we used this to get a general idea of the distributions.
 
 ```{r}
 # Summarize the data
@@ -483,9 +500,9 @@ Shows general statistical values of obesity_data.
 summary(obesity_data)
 ```
 
-The 'obesity_data' is combined with 'states_map' based on the states name. This data is merged using 'left_join" that make sures that entries from 'states_maps" are retained. This adds obesity rate to the data wherever it is available. This join is based on matching within the 'ID' column with 'state_name'.
+The 'obesity_data' is combined with 'states_map' based on the states name. This data is merged using 'left_join" that makes sure that entries from 'states_maps" are retained. This adds obesity rate to the data wherever it is available. This join is based on matching within the 'ID' column with 'state_name'.
 
-The merged data is used to generate a geographic heat map. 'fill' is set to 'obesity_rate' which colors each state based on the prevalence of obesity. 'scale_fill_viridis_c' function is used to apply the Viridis color scale to the heat map. 
+The merged data is used to generate a geographic heat map. 'fill' is set to 'obesity_rate' which colors each state based on the prevalence of obesity. 'scale_fill_viridis_c' function is used to apply the Viridis color scale to the heat map. The obesity heatmap is used to identify obesity levels according to socioeconomic status which is revealed by our chosen states.
 
 ```{r}
 # Merging the obesity data with the map data based on state names
@@ -506,14 +523,14 @@ ggplot(data = obesity_states_map) +
 
 ```
 
-The datasets 'establishment_states_maps' and 'obesity_data' are merged. The first dataset contains data on the presence of different establishment types based on state and the second dataset provides data on obesity rate for each state. The merging is accomplished by using 'left_join' which makes sure all entries from the first dataset are supplemented by 'obesity_data'. This merging help link health metrics and other factors. This allows for greater analysis when understanding the relationship between food establishmment density and obesity rates. Overall, providing insights into potential public health issues when regarding food establishments.
+The data sets 'establishment_states_maps' and 'obesity_data' are merged. The first data set contains data on the presence of different establishment types based on state and the second data set provides data on obesity rate for each state. The merging is accomplished by using 'left_join' which makes sure all entries from the first data set are supplemented by 'obesity_data'. This merging helps link health metrics and other factors. This allows for greater analysis when understanding the relationship between food establishment density and obesity rates. Overall, providing insights into potential public health issues when regarding food establishments.
 
 ```{r}
 # Merge the obesity rates with the establishment density data
 combined_data <- left_join(establishment_states_map, obesity_data, by = c("ID" = "state_name"))
 ```
 
-The scatter plot will show the relationship between establishment density and obesity rate, thereby shedding light into public health insights, research questions, and potential interventions
+The scatter plot will show the relationship between establishment density and obesity rate, thereby shedding light onto how food establishments can directly impact obesity. This helps further our research question of finding the link to obesity rates.
 
 
 ```{r}
@@ -530,9 +547,9 @@ ggplot(combined_data, aes(x = establishment_density, y = obesity_rate)) +
 ```
 ### Conclusion
 
-In conclusion, the visualizations created from "Eating and Drinking Places by Census Tract, United States, 2003-2017" dataset provided insight into the trends and dynamics of food establishments around America. Although this dataset is very objective and doesn't present a direct issue, it provides the tools to devise and identify one. Through the use of time series analysis, bar plots, scatter plots, density plots, and other visualizations more information was gathered to provide a direction on identifying an issue. Trends were able to be uncovered and several correlations can be used to eventually help brainstorm  a research question for the dataset. 
+In conclusion, the visualizations created from the "Eating and Drinking Places by Census Tract, United States, 2003-2017" data set provided insight into the trends and dynamics of food establishments around America. Although this data set is very objective and doesn't present a direct issue, it provides the tools to devise and identify one. Through the use of time series analysis, bar plots, scatter plots, density plots, and other visualizations more information was gathered to provide a direction on identifying how establishments and other critical variables relate to socioeconomic status and obesity rates. Trends were able to be uncovered and several correlations were visualized to further explore this research area.
 
-Overall, the visualizations has allowed us as group to further grasp the information, making it more readable and comprehensive. This provides more insight on how the data looks like and it underscores the importance of visual analysis. With the use of these visualizations, one can further analyze and understand the data as a whole. Cleaning, filtering, and visualizing the dataset has laid down a foundation for further and more advanced exploration which will come in the near future. 
+Overall, the visualizations have allowed us as a group to further grasp the information, making it more readable and comprehensive. This provides more insight on how the data looks and it underscores the importance of visual analysis. With the use of these visualizations, one can further analyze and understand the data as a whole. Cleaning, filtering, and visualizing the data set has laid down a foundation for further and more advanced exploration.
 
 ### Data citation (APA)
 
