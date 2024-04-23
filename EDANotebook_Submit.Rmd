@@ -1,3 +1,4 @@
+---
 title: "EDA"
 author: "Jaden, Sanya, and Zaim"
 date: "2024-03-04"
