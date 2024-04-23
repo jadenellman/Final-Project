@@ -207,7 +207,7 @@ my_data_byselect$statecol <- factor(my_data_byselect$statecol, levels = c("DC", 
 ```
 
 
-A histogram is generated from the 'ggplot2' package for the variable 'count_sales_7225' which represents the number of sales in fast-food establishments. This variable is from the 'my_data_bystate' which is organized by state. This histogram is generated to show fast food sales by state. Sales provides a deeper level than the number of establishments since it shows customer and state engagement with the establishments.
+A histogram is generated from the 'ggplot2' package for the variable 'count_sales_7225' which represents the number of sales in all food establishments. This variable is from the 'my_data_bystate' which is organized by state. This histogram is generated to show food sales by state. Sales provides a deeper level than the number of establishments since it shows customer and state engagement with the establishments.
 
 ```{r}
 # Histogram for a numerical column
@@ -216,9 +216,9 @@ ggplot(my_data_bystate, aes(x = count_sales_7225)) + geom_histogram()
 
 This part of code shows two separate box plots:
 
-The first box plot visualizes the variable 'count_sales_7225' which reveals the number of sales at fast food establishments across many years. This box plot is generated to display how sales vary annually according to state.This can provide insight into how time may impact certain influences such as obesity. If there is prolonged or increased sales at fast food establishments, this may explain an obesity issue.
+The first box plot visualizes the variable 'count_sales_7225' which reveals the number of sales at food establishments across many years. This box plot is generated to display how sales vary annually according to state.This can provide insight into how time may impact certain influences such as obesity. If there is prolonged or increased sales at food establishments, this may explain an obesity issue.
 
-The second box plot visualizes the same variable of 'count_sales_7225' according to each state but is filtered by the year 2007. The filter is used to provide insight on how fast food sales varied by state during the year of 2007. This can allow us to see how readily available fast food restaurants are in each state which can lead to a higher frequency of obesity due to access.
+The second box plot visualizes the same variable of 'count_sales_7225' according to each state but is filtered by the year 2007. The filter is used to provide insight on how food sales varied by state during the year of 2007. This can allow us to see how readily available various restaurants are in each state which can lead to a higher frequency of obesity due to access.
 
 ```{r}
 # Boxplot for a numerical column by a categorical column
@@ -226,7 +226,7 @@ ggplot(my_data_byselect, aes(x = year, y = count_sales_7225)) + geom_boxplot()
 ggplot(my_data_byselect %>% filter(year == 2007), aes(x = statecol, y = count_sales_7225)) + geom_boxplot() + ggtitle("Distribution of Restaurants with Sales >0 in 2007 Census Tracts by Select States (2007)")
 ```
 
-This code is generating a scatter plot to visualize the relationship between the variables 'count_emp_7225', which represents the number of employees in the fast food establishments, and the variable 'count_sales_7225' from the 'my_data_bystate' data set. This scatter plot is generated to explore any relationships between number of employees and sales across different states which can show engagement with the restaurants.
+This code is generating a scatter plot to visualize the relationship between the variables 'count_emp_7225', which represents the number of employees in food establishments, and the variable 'count_sales_7225' from the 'my_data_bystate' data set. This scatter plot is generated to explore any relationships between number of employees and sales across different states which can show engagement with the restaurants.
 
 ```{r}
 # Scatterplot between two numerical columns
@@ -247,7 +247,7 @@ data_filtered_years %>%
 ```
 
 
-A time series line plot is generated using 'ggplot2'. The line plot plots 'year' on the x axis and 'count_7225' on the y-axis. The 'count_7225' variable represents the count of fast food establishments. The 'geom_line(group=1, colour= "blue")' is utilized to generate a blue line as a visual representation of the data. This plot is generated to visualize trends or fluctuations within the number of establishments over the years.This code can provide insight into how the number of fast food establishments has changed in years to see any link to the ongoing crisis.
+A time series line plot is generated using 'ggplot2'. The line plot plots 'year' on the x axis and 'count_7225' on the y-axis. The 'count_7225' variable represents the count of all food establishments. The 'geom_line(group=1, colour= "blue")' is utilized to generate a blue line as a visual representation of the data. This plot is generated to visualize trends or fluctuations within the number of establishments over the years.This code can provide insight into how the number of food establishments has changed in years to see any link to the ongoing crisis.
 
 ```{r}
 # Time Series of Establishment Counts over the Years
