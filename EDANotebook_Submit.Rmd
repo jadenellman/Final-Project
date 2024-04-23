@@ -302,7 +302,7 @@ ggplot(establishment_counts_by_select, aes(x = statecol, y = count, fill = estab
   theme_minimal() +
   theme(legend.title = element_blank())
 ```
-```{r}
+```{r eval=FALSE, include=FALSE}
 install.packages("viridis")
 ```
 
@@ -387,11 +387,11 @@ my_select_data_long %>%
   theme(axis.text.x = element_text(angle = 90, hjust = 1))
 ```
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 install.packages("sf")
 ```
 
-```{r}
+```{r eval=FALSE, include=FALSE}
 install.packages("maps")
 ```
 
@@ -528,7 +528,8 @@ The data sets 'establishment_states_maps' and 'obesity_data' are merged. The fir
 
 ```{r}
 # Merge the obesity rates with the establishment density data
-combined_data <- left_join(establishment_states_map, obesity_data, by = c("ID" = "state_name"))
+state_establishment_density <- state_establishment_density %>% rename('state_name' = 'statecol')
+combined_data <- obesity_data %>% left_join(state_establishment_density)
 ```
 
 The scatter plot will show the relationship between establishment density and obesity rate, thereby shedding light onto how food establishments can directly impact obesity. This helps further our research question of finding the link to obesity rates.
